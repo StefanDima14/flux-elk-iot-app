@@ -19,6 +19,7 @@ spec:
       clusterName: "iot-cluster"
       version: "8.17.1"
       replicas: 3
+      storage: 5Gi
       resources:
         requests:
           memory: "500Mi"
