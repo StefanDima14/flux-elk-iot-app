@@ -1,4 +1,4 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: elk-cluster
@@ -7,10 +7,10 @@ spec:
   releaseName: elk-cluster
   chart:
     spec:
-      chart: ./chart/elasticsearch
+      chart: ./charts/elasticsearch
       sourceRef:
         kind: GitRepository
-        name: elasticsearch-chart
+        name: eck-elasticsearch-stack
         namespace: flux-system
   interval: 1m
   values:
