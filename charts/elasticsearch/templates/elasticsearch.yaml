@@ -5,10 +5,11 @@ metadata:
 spec:
   version: {{ .Values.elasticsearch.version }}
   nodeSets:
-    - name: default
+    - name: masterdata
       count: {{ .Values.elasticsearch.replicas }}
       config:
         node.roles: ["master", "data", "ingest"]
+        node.store.allow_mmap: false
       podTemplate:
         spec:
           initContainers:
@@ -21,6 +22,9 @@ spec:
             - name: elasticsearch
               resources:
                 {{- toYaml .Values.elasticsearch.resources | nindent 16 }}
+              env:
+              - name: ES_JAVA_OPTS
+                value: "-Xms2g -Xmx2g
       volumeClaimTemplates:
         - metadata:
             name: elasticsearch-data
