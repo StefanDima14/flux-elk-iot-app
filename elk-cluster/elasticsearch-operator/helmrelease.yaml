@@ -1,4 +1,4 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: eck-operator
@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: eck-operator
-      version: 2.16 # Replace with the desired version
+      version: "2.16" # Replace with the desired version
       sourceRef:
         kind: HelmRepository
         name: elastic
