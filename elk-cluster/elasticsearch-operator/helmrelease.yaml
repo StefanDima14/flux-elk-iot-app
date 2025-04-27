@@ -1,0 +1,19 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: eck-operator
+  namespace: flux-system
+spec:
+  releaseName: eck-operator
+  chart:
+    spec:
+      chart: eck-operator
+      version: 2.16 # Replace with the desired version
+      sourceRef:
+        kind: HelmRepository
+        name: elastic
+        namespace: flux-system
+  interval: 1m
+  values:
+    managedNamespaces:
+      - elk-cluster

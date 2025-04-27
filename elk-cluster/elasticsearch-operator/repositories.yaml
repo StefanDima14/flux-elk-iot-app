@@ -1,0 +1,18 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: elastic
+  namespace: flux-system
+spec:
+  url: https://helm.elastic.co
+  interval: 1h
+
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: eck-operator
+  namespace: flux-system
+spec:
+  interval: 5m
+  url: https://github.com/elastic/cloud-on-k8s
