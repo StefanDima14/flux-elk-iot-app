@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: eck-elasticsearch-stack
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: https://github.com/StefanDima14/flux-elk-iot-app.git
+  ref:
+    branch: main
