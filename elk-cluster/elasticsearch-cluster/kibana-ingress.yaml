@@ -32,6 +32,6 @@ metadata:
 spec:
   defaultBackend:
     service:
-      name: kibana-kb-http
+      name: kibana-iot-kb-http
       port:
         number: 5601
