@@ -110,18 +110,18 @@ spec:
               targetPort: 5601
           externalTrafficPolicy: Local
     # Expose only Kibana
-    # ingress:
-    #   enabled: true
-    #   className: gce
-    #   annotations:
-    #     kubernetes.io/ingress.class: gce
-    #   pathType: Prefix
-    #   hosts:
-    #     - host: kibana.34-96-118-192.nip.io
-    #       path: /
+    ingress:
+      enabled: false
+      className: gce
+      annotations:
+        kubernetes.io/ingress.class: gce
+      pathType: Prefix
+      hosts:
+        - host: kibana.34-96-118-192.nip.io
+          path: /
           
-    #   tls:
-    #     enabled: false
+      tls:
+        enabled: false
 
     # Public URL for reverse proxy
     config:
