@@ -91,39 +91,25 @@ spec:
     # Point to the ES service in-cluster
     elasticsearchRef:
       name: elk-iot-cluster
-    # http:
-    #   service:
-    #     metadata:
-    #       annotations:
-    #         cloud.google.com/neg: '{"ingress": true}'
-    #     spec:
-    #       type: ClusterIP
+
     http:
       service:
-        spec:
-          type: LoadBalancer
-          loadBalancerIP: 34.116.188.128 # Static IP for GKE LoadBalancer created gcloud compute addresses create kibana-svc-ip --region=europe-central2    # or your GKE region
-
-          ports:
-            - name: http
-              port: 80
-              targetPort: 5601
-          externalTrafficPolicy: Local
-    # Expose only Kibana
+        metadata:
+          annotations:
+            # This is required for `ClusterIP` services (which are the default ECK service type) to be used with Ingress in GKE clusters.
+            cloud.google.com/neg: '{"ingress": true}'
+            # This is required to enable the GKE Ingress Controller to use HTTPS as the backend protocol.
+            cloud.google.com/app-protocols: '{"https":"HTTPS"}'
+            # cloud.google.com/backend-config: '{"default": "kibana"}'
     ingress:
-      enabled: false
-      className: gce
-      annotations:
-        kubernetes.io/ingress.class: gce
+      enabled: true
       pathType: Prefix
       hosts:
-        - host: kibana.34-96-118-192.nip.io
-          path: /
-          
+      - host: "kibana.company.dev"
+        path: "/"
       tls:
-        enabled: false
-
-    # Public URL for reverse proxy
-    config:
-      server:
-        publicBaseUrl: "http://kibana.34.116.188.128.nip.io"
+        enabled: true
+        # Public URL for reverse proxy
+        config:
+          server:
+            publicBaseUrl: "https://kibana.company.dev"
