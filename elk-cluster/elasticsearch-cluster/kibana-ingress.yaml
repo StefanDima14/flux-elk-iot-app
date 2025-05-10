@@ -1,4 +1,17 @@
 ---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: elastic-stack
+  namespace: elk-cluster
+spec:
+  healthCheck:
+    checkIntervalSec: 15
+    port: 5601  # Port your service listens on
+    type: HTTP
+    requestPath: /  # Adjust the path if necessary
+
+---
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
 metadata:
@@ -25,8 +38,8 @@ metadata:
   name: kibana
   namespace: elk-cluster
   annotations:
-    networking.gke.io/managed-certificates: elastic-stack
-    networking.gke.io/v1beta1.FrontendConfig: elastic-stack
+    # networking.gke.io/managed-certificates: elastic-stack
+    # networking.gke.io/v1beta1.FrontendConfig: elastic-stack
     kubernetes.io/ingress.global-static-ip-name: elastic-stack
     kubernetes.io/ingress.class: gce
 spec:
