@@ -91,6 +91,13 @@ spec:
     # Point to the ES service in-cluster
     elasticsearchRef:
       name: elk-iot-cluster
+    http:
+      service:
+        metadata:
+          annotations:
+            cloud.google.com/neg: '{"ingress": true}'
+        spec:
+          type: ClusterIP
 
     # Expose only Kibana
     ingress:
