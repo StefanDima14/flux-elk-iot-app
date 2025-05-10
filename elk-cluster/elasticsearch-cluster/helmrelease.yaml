@@ -93,7 +93,7 @@ spec:
       name: elk-iot-cluster
     config:
       server:
-        publicBaseUrl: "elk.iot.cluster.local"
+        publicBaseUrl: "http://34.49.182.179:5601"
     http:
       tls:
         selfSignedCertificate:
