@@ -98,15 +98,16 @@ spec:
       className: gce
       annotations:
         kubernetes.io/ingress.class: gce
+      pathType: Prefix
       hosts:
-        - host: kibana.elk-iot-cluster.test.local
+        - host: kibana.34-96-118-192.nip.io
           path: /
-          pathType: Prefix
+          
       tls:
-        enabled: true
+        enabled: false
         # omit secretName to use ECK operator-managed cert
 
     # Public URL for reverse proxy
     config:
       server:
-        publicBaseUrl: "https://kibana.elk-iot-cluster.test.local"
+        publicBaseUrl: "https://kibana.34-96-118-192.nip.io"
