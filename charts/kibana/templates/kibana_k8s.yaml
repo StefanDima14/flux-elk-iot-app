@@ -60,52 +60,89 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 
+# ---
+# {{- if .Values.ingress.enabled -}}
+# {{- $pathType := .Values.ingress.pathType | default "Prefix" -}}
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: {{ include "kibana.fullname" . }}
+#   labels:
+#     {{- include "kibana.labels" . | nindent 4 }}
+#     {{- with .Values.ingress.labels }}
+#     {{- toYaml . | nindent 4 }}
+#     {{- end }}
+#   {{- if .Values.ingress.annotations }}
+#   annotations:
+#     {{- with .Values.ingress.annotations }}
+#     {{- toYaml . | nindent 4 }}
+#     {{- end }}
+#   {{- end }}
+# spec:
+#   {{- if .Values.ingress.className }}
+#   ingressClassName: {{ .Values.ingress.className | quote }}
+#   {{- end }}
+#   {{- if .Values.ingress.tls.enabled }}
+#   tls:
+#   - hosts:
+#   {{- range .Values.ingress.hosts }}
+#     - {{ .host | quote }}
+#   {{- end }}
+#   {{- if .Values.ingress.tls.secretName }}
+#     secretName: {{ .Values.ingress.tls.secretName }}
+#   {{- else }}
+#     secretName: {{ include "kibana.fullname" . }}-kb-http-certs-internal
+#   {{- end }}
+#   {{- end }}
+#   rules:
+#   {{- range .Values.ingress.hosts }}
+#   {{- $hostPath := .path | default "/" }}
+#   - host: {{ .host | quote }}
+#     http:
+#       paths:
+#       - path: {{ $hostPath }}
+#         pathType: {{ $pathType }}
+#         backend:
+#           service:
+#             name: {{ include "kibana.fullname" $ }}-kb-http
+#             port:
+#               number: 5601
+#   {{- end }}
+# {{ end }}
 ---
-{{- if .Values.ingress.enabled -}}
-{{- $pathType := .Values.ingress.pathType | default "Prefix" -}}
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: elastic-stack
+  namespace: elk-cluster
+spec:
+  redirectToHttps:
+    enabled: true
+    responseCodeName: MOVED_PERMANENTLY_DEFAULT
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: elastic-stack
+  namespace: elk-cluster
+spec:
+  domains:
+    - elk.iot.cluster.local
+
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "kibana.fullname" . }}
-  labels:
-    {{- include "kibana.labels" . | nindent 4 }}
-    {{- with .Values.ingress.labels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-  {{- if .Values.ingress.annotations }}
+  name: kibana
+  namespace: elk-cluster
   annotations:
-    {{- with .Values.ingress.annotations }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-  {{- end }}
+    networking.gke.io/managed-certificates: elastic-stack
+    networking.gke.io/v1beta1.FrontendConfig: elastic-stack
+    kubernetes.io/ingress.global-static-ip-name: elastic-stack
+    kubernetes.io/ingress.class: gce
 spec:
-  {{- if .Values.ingress.className }}
-  ingressClassName: {{ .Values.ingress.className | quote }}
-  {{- end }}
-  {{- if .Values.ingress.tls.enabled }}
-  tls:
-  - hosts:
-  {{- range .Values.ingress.hosts }}
-    - {{ .host | quote }}
-  {{- end }}
-  {{- if .Values.ingress.tls.secretName }}
-    secretName: {{ .Values.ingress.tls.secretName }}
-  {{- else }}
-    secretName: {{ include "kibana.fullname" . }}-kb-http-certs-internal
-  {{- end }}
-  {{- end }}
-  rules:
-  {{- range .Values.ingress.hosts }}
-  {{- $hostPath := .path | default "/" }}
-  - host: {{ .host | quote }}
-    http:
-      paths:
-      - path: {{ $hostPath }}
-        pathType: {{ $pathType }}
-        backend:
-          service:
-            name: {{ include "kibana.fullname" $ }}-kb-http
-            port:
-              number: 5601
-  {{- end }}
-{{ end }}
+  defaultBackend:
+    service:
+      name: kibana-kb-http
+      port:
+        number: 5601
