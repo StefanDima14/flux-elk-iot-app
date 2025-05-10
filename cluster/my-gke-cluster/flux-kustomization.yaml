@@ -37,7 +37,7 @@ spec:
     kind: GitRepository
     name: flux-system       
     namespace: flux-system
-  path: ./clusters/my-gke-cluster/flux-system/notifications
+  path: ./cluster/my-gke-cluster/flux-system/notifications
   prune: true
   resources:
     - flux-notifications.yaml
