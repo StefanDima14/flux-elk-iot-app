@@ -110,4 +110,4 @@ spec:
     # Public URL for reverse proxy
     config:
       server:
-        publicBaseUrl: "https://kibana.34-96-118-192.nip.io"
+        publicBaseUrl: "http://kibana.34-96-118-192.nip.io"
