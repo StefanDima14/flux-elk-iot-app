@@ -95,11 +95,13 @@ spec:
     # Expose only Kibana
     ingress:
       enabled: true
+      className: gce
       annotations:
         kubernetes.io/ingress.class: gce
       hosts:
         - host: kibana.elk-iot-cluster.test.local
           path: /
+          pathType: Prefix
       tls:
         enabled: true
         # omit secretName to use ECK operator-managed cert
