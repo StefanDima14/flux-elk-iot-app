@@ -100,9 +100,9 @@ spec:
     # Point to the ES service in-cluster
     elasticsearchRef:
       name: elk-iot-cluster
-    # config:
-    #   server:
-    #     publicBaseUrl: "https://elk.iot.cluster.local:5601"
+    config:
+      server:
+        publicBaseUrl: "http://35.244.204.182:5601"
     http:
       tls:
         selfSignedCertificate:
