@@ -78,7 +78,6 @@ spec:
         kind: GitRepository
         name: eck-elasticsearch-stack
         namespace: flux-system
-      version: 8.8.0
   values:
     # Basic settings
     kibana:

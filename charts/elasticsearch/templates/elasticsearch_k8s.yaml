@@ -1,12 +1,12 @@
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
-  name: {{ .Values.fullname }}-es
+  name: {{ .Values.fullname }}
   namespace: {{ .Release.Namespace }}
 spec:
   version: "{{ .Values.elasticsearch.version }}"
   nodeSets:
-    - name: default
+    - name: masterdata
       count: {{ .Values.elasticsearch.count }}
       config:
         node.roles: {{ toJson .Values.elasticsearch.roles }}
