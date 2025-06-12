@@ -48,6 +48,9 @@ spec:
             - name: http
               port: 9200
               targetPort: 9200
+            - name: https
+              port: 9200
+              targetPort: 9200
           externalTrafficPolicy: Local
           
     # Rolling upgrades
