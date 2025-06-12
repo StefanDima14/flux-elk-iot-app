@@ -27,7 +27,13 @@ spec:
   {{ fail "An elasticsearchRef is required" }}
   {{- end }}
   elasticsearchRef:
-    name: {{ .Values.elasticsearchRef.name }}
+  {{- toYaml $esRef | nindent 4 }}
+  {{- $entsearchRef := or ((.Values.spec).enterpriseSearchRef) (.Values.enterpriseSearchRef) }}
+  {{- if $entsearchRef }}
+  enterpriseSearchRef:
+  {{- toYaml $entsearchRef | nindent 4 }}
+  {{- end }}
+  {{- with or ((.Values.spec).config) (.Values.config) }}
   config:
     {{ toYaml . | nindent 4 }}
   {{- end }}
