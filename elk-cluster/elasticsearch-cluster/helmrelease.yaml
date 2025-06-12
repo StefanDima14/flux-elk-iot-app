@@ -100,12 +100,12 @@ spec:
     # Point to the ES service in-cluster
     elasticsearchRef:
       name: elk-iot-cluster
-    config:
-      server:
-        publicBaseUrl: "https://elk.iot.cluster.local:5601"
+    # config:
+    #   server:
+    #     publicBaseUrl: "https://elk.iot.cluster.local:5601"
     http:
       tls:
-        Certificate:
-          secretName: kibana-iot-kb-es-ca
+        selfSignedCertificate:
+          disabled: true
     ingress:
       enabled: false
