@@ -17,3 +17,4 @@ spec:
   values:
     managedNamespaces:
       - elk-cluster
+      - elk-cluster-iot
