@@ -102,10 +102,10 @@ spec:
       name: elk-iot-cluster
     config:
       server:
-        publicBaseUrl: "http://elk.iot.cluster.local:5601"
+        publicBaseUrl: "https://elk.iot.cluster.local:5601"
     http:
       tls:
-        selfSignedCertificate:
-          disabled: true
+        Certificate:
+          secretName: kibana-iot-kb-es-ca
     ingress:
       enabled: false
