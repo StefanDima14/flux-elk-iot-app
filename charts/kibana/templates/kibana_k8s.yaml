@@ -1,61 +1,29 @@
----
 apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
 metadata:
-  name: {{ include "kibana.fullname" . }}
-  labels:
-    {{- include "kibana.labels" . | nindent 4 }}
-  annotations:
-    eck.k8s.elastic.co/license: basic
-    {{- with .Values.annotations }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
+  name: {{ .Values.fullname }}-kibana
+  namespace: {{ .Release.Namespace }}
 spec:
-  version: {{ required "A Kibana version is required" .Values.version }}
-  {{- /* 
-    The following templates with 'or' are to allow both .spec.field and .field to be set for backwards 
-    compatibility purposes. See https://github.com/elastic/cloud-on-k8s/pull/8192 for details.
-  */ -}}
-  {{- with or ((.Values.spec).image) (.Values.image) }}
-  image: {{ . }}
-  {{- end }}
-  {{- with or ((.Values.spec).count) (.Values.count) }}
-  count: {{ . }}
-  {{- end }}
-  {{- $esRef := or ((.Values.spec).elasticsearchRef) (.Values.elasticsearchRef) }}
-  {{- if not ($esRef).name }}
-  {{ fail "An elasticsearchRef is required" }}
-  {{- end }}
+  version: "{{ .Values.kibana.version }}"
+  count: {{ .Values.kibana.count }}
   elasticsearchRef:
-  {{- toYaml $esRef | nindent 4 }}
-  {{- $entsearchRef := or ((.Values.spec).enterpriseSearchRef) (.Values.enterpriseSearchRef) }}
-  {{- if $entsearchRef }}
-  enterpriseSearchRef:
-  {{- toYaml $entsearchRef | nindent 4 }}
-  {{- end }}
-  {{- with or ((.Values.spec).config) (.Values.config) }}
-  config:
-    {{ toYaml . | nindent 4 }}
-  {{- end }}
-  {{- with or ((.Values.spec).http) (.Values.http) }}
-  http:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  {{- with or ((.Values.spec).podTemplate) (.Values.podTemplate) }}
+    name: {{ .Values.elasticsearchRef }}-es
   podTemplate:
-    {{ toYaml . | nindent 4 }}
-  {{- end }}
-  {{- with or ((.Values.spec).revisionHistoryLimit) (.Values.revisionHistoryLimit) }}
-  revisionHistoryLimit: {{ . }}
-  {{- end }}
-  {{- with or ((.Values.spec).secureSettings) (.Values.secureSettings) }}
-  secureSettings:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  {{- with or ((.Values.spec).serviceAccountName) (.Values.serviceAccountName) }}
-  serviceAccountName: {{ . }}
-  {{- end }}
-  {{- with or ((.Values.spec).monitoring) (.Values.monitoring) }}
-  monitoring:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    spec:
+      containers:
+        - name: kibana
+          resources:
+            requests:
+              cpu: {{ .Values.kibana.resources.requests.cpu }}
+              memory: {{ .Values.kibana.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.kibana.resources.limits.cpu }}
+              memory: {{ .Values.kibana.resources.limits.memory }}
+
+  http:
+    service:
+      spec:
+        type: {{ .Values.kibana.service.type }}
+        ports:
+          - port: {{ .Values.kibana.service.port }}
+            name: http

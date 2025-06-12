@@ -17,63 +17,48 @@ spec:
         namespace: flux-system
   values:
     # Identity
-    fullnameOverride: "elk-iot-cluster"
-    version: 8.8.0
+    fullname: "elk-iot-cluster"
+    elasticsearch:
+      version: "8.10.0"
+      count: 3
+      roles: ["master", "data"]
+      resources:
+        requests:
+          cpu: 500m
+          memory: 1Gi
+        limits:
+          cpu: 1
+          memory: 2Gi
+      persistence:
+        size: 5Gi
+        storageClassName: standard
+      # disable TLS on HTTP for simplicity (in-cluster only)
+      http:
+        tls:
+          selfSignedCertificate:
+            disabled: true
+              
+        # Rolling upgrades
+        updateStrategy:
+          changeBudget:
+            maxSurge: 1
+            maxUnavailable: 0
 
-    # Topology: 3 master+data nodes
-    nodeSets:
-      - name: default
-        count: 3
-        config:
-          node.store.allow_mmap: false
-          node.roles:
-            - master
-            - data
-        podTemplate:
+        # PodDisruptionBudget
+        podDisruptionBudget:
+          disabled: false
           spec:
-            containers:
-              - name: elasticsearch
-                resources:
-                  requests:
-                    cpu: 500m
-                    memory: 1Gi
-                  limits:
-                    cpu: 1
-                    memory: 1Gi
-    http:
-      service:
-        spec:
-          type: LoadBalancer
-          ports:
-            - name: http
-              port: 9200
-              targetPort: 9200
-            - name: https
-              port: 9200
-              targetPort: 9200
-          externalTrafficPolicy: Local
-          
-    # Rolling upgrades
-    updateStrategy:
-      changeBudget:
-        maxSurge: 1
-        maxUnavailable: 0
+            minAvailable: 2
+            selector:
+              matchLabels:
+                elasticsearch.k8s.elastic.co/cluster-name: elk-iot-cluster
 
-    # PodDisruptionBudget
-    podDisruptionBudget:
-      disabled: false
-      spec:
-        minAvailable: 2
-        selector:
-          matchLabels:
-            elasticsearch.k8s.elastic.co/cluster-name: elk-iot-cluster
+        # Clean up PVCs on delete
+        volumeClaimDeletePolicy: DeleteOnScaledownAndClusterDeletion
 
-    # Clean up PVCs on delete
-    volumeClaimDeletePolicy: DeleteOnScaledownAndClusterDeletion
-
-    # Do not expose ES HTTP directly
-    ingress:
-      enabled: false
+        # Do not expose ES HTTP directly
+        ingress:
+          enabled: false
 
 ---
 # helmrelease-kibana.yaml
@@ -96,19 +81,21 @@ spec:
       version: 8.8.0
   values:
     # Basic settings
-    fullnameOverride: "kibana-iot"
-    version: 8.8.0
-    count: 1
+    kibana:
+      version: "8.10.0"
+      count: 1
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: 500m
+          memory: 1Gi
+      service:
+        type: LoadBalancer
+        port: 5601
+    fullname: "kibana-iot"
 
     # Point to the ES service in-cluster
     elasticsearchRef:
       name: elk-iot-cluster
-    config:
-      server:
-        publicBaseUrl: "http://35.244.204.182:5601"
-    http:
-      tls:
-        selfSignedCertificate:
-          disabled: true
-    ingress:
-      enabled: false
