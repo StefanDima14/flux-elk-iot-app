@@ -4,4 +4,4 @@ resources:
   - namespace.yaml
   - repositories.yaml
   - helmrelease.yaml
-  - kibana-ingress.yaml
+  # - kibana-ingress.yaml
