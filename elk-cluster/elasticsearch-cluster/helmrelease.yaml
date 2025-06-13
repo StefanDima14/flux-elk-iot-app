@@ -2,12 +2,12 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: elk-cluster
-  namespace: elk-cluster
+  name: elastic
+  namespace: elastic-cluster
 spec:
   interval: 1m
   releaseName: elk-iot-cluster
-  targetNamespace: elk-cluster
+  targetNamespace: elastic-cluster
   chart:
     spec:
       chart: ./charts/elasticsearch
@@ -78,11 +78,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: kibana
-  namespace: elk-cluster
+  namespace: elastic-cluster
 spec:
   interval: 5m
   releaseName: kibana-iot
-  targetNamespace: elk-cluster
+  targetNamespace: elastic-cluster
   chart:
     spec:
       chart: ./charts/kibana
