@@ -18,7 +18,7 @@ spec:
   values:
     # Identity
     fullnameOverride: "elk-iot-cluster"
-    version: 8.8.0
+    version: "8.8.0"
 
     # Topology: 3 master+data nodes
     nodeSets:
@@ -94,7 +94,7 @@ spec:
   values:
     # Basic settings
     fullnameOverride: "kibana-iot"
-    version: 8.8.0
+    version: "8.8.0"
     count: 1
 
     # Point to the ES service in-cluster
